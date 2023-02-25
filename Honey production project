@@ -1,0 +1,50 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn import linear_model
+
+# Read in honey production data from Codecademy's website
+df = pd.read_csv("https://content.codecademy.com/programs/data-science-path/linear_regression/honeyproduction.csv")
+
+# Group data by year and calculate the mean honey production for each year
+prod_per_year = df.groupby('year').totalprod.mean().reset_index()
+
+# Extract the years as the independent variable X and reshape to be a 2D array
+X = prod_per_year['year']
+X= X.values.reshape(-1,1)
+
+# Extract the total honey production as the dependent variable y
+y = prod_per_year['totalprod']
+
+# Create a scatter plot of the honey production data
+plt.scatter(X, y)
+
+# Create a linear regression object
+regr = linear_model.LinearRegression()
+
+# Train the model using the training sets
+regr.fit(X, y)
+
+# Make predictions using the testing set
+y_predict = regr.predict(X)
+
+# Add the line of best fit to the scatter plot
+plt.plot(X, y_predict)
+
+# Specify the range of future years to predict honey production for
+X_future = np.array(range(2013, 2050))
+X_future = X_future.reshape(-1, 1)
+
+# Predict future honey production using the linear regression model
+future_predict = regr.predict(X_future)
+
+# Add the predicted values for future years to the plot
+plt.plot(X_future, future_predict)
+
+# Add titles and labels to the plot
+plt.title("Honey Production Over Time")
+plt.xlabel("Year")
+plt.ylabel("Total Honey Production (lbs)")
+
+# Show the plot
+plt.show()
